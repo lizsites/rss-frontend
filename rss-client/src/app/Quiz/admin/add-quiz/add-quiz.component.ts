@@ -92,6 +92,7 @@ export class AddQuizComponent implements OnInit {
   closeResult = '';
   open(content, question, subject?) {
     if (question == 'new') {
+      this.questionForm.reset();
       this.focusedQuestion = {
         question: null,
         quizId: this.focusedQuiz.quizId,
@@ -104,7 +105,13 @@ export class AddQuizComponent implements OnInit {
         quiz: {},
       };
     } else {
-      this.focusedQuestion = question;
+      console.log(question);
+      this.questionForm.setValue({
+        question: question.question,
+        questionValue: question.questionValue,
+        correctAnswer: question.correctAnswer,
+        options: question.options
+      });
     }
     this.modalService
       .open(content, { ariaLabelledBy: 'modal-basic-title' })
@@ -132,7 +139,7 @@ export class AddQuizComponent implements OnInit {
             let index = this.focusedQuiz.questions.indexOf(
               this.focusedQuestion
             );
-            // if it doesn't exist, push it to the end of the quesion array
+            // if it doesn't exist, push it to the end of the question array
             if (index == -1) {
               this.focusedQuiz.questions.push(newQuestion);
             } else {
@@ -142,7 +149,6 @@ export class AddQuizComponent implements OnInit {
             // updates the total points available in this quiz
             this.updateTotal();
             this.validate();
-            this.questionForm.reset();
           } else if (result.type == 'delete') {
             //TODO:remove question from database here
             this.focusedQuiz.questions = this.focusedQuiz.questions.filter(
