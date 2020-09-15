@@ -15,6 +15,7 @@ export class AddQuizComponent implements OnInit {
 
   questionForm = this.formBuilder.group({
     question: ['', Validators.required],
+    questionValue: [0, Validators.required],
     correctAnswer: [0, Validators.required],
     options: this.formBuilder.array([
       this.formBuilder.control('')
@@ -40,8 +41,6 @@ export class AddQuizComponent implements OnInit {
     }
   }
   focusedQuestion;
-
-  
 
   get options() {
     return this.questionForm.get('options') as FormArray;
@@ -115,6 +114,7 @@ export class AddQuizComponent implements OnInit {
           if (result.type == 'update') {
             //TODO:update question in Database
             // Addstuff here to change what each question contains
+            console.log(result);
             let newQuestion = {
               questionId: this.focusedQuestion.questionId,
               question: result.value.question,
@@ -123,7 +123,7 @@ export class AddQuizComponent implements OnInit {
               options: []
             };
             // Adds only options with not null values
-            for (const option of result.options) {
+            for (const option of result.value.options) {
               if (option != null){
                 newQuestion.options.push(option);
               }
@@ -142,6 +142,7 @@ export class AddQuizComponent implements OnInit {
             // updates the total points available in this quiz
             this.updateTotal();
             this.validate();
+            this.questionForm.reset();
           } else if (result.type == 'delete') {
             //TODO:remove question from database here
             this.focusedQuiz.questions = this.focusedQuiz.questions.filter(
