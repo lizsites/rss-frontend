@@ -2,6 +2,7 @@ import { QuizService } from 'src/app/services/quiz.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'add-quiz',
@@ -11,6 +12,14 @@ import { UserService } from 'src/app/services/user.service';
 export class AddQuizComponent implements OnInit {
   view = 'select';
   subjects;
+
+  questionForm = this.formBuilder.group({
+    question: ['', Validators.required],
+    correctAnswer: [0, Validators.required],
+    options: this.formBuilder.array([
+      this.formBuilder.control('')
+    ])
+  });
 
   focusedQuiz = {
     quizId: 0,
@@ -31,6 +40,12 @@ export class AddQuizComponent implements OnInit {
     }
   }
   focusedQuestion;
+
+  
+
+  get options() {
+    return this.questionForm.get('options') as FormArray;
+  }
 
   subjectText = '';
   addSubject(event) {
@@ -105,16 +120,12 @@ export class AddQuizComponent implements OnInit {
               question: result.value.question,
               questionValue: result.value.questionValue,
               correctAnswer: result.value.correctAnswer,
+              options: []
             };
             // Adds only options with not null values
-            let i = 1;
-            for (let [key, value] of Object.entries(result.value)) {
-              if (key[0] == 'o') {
-                if (value != null) {
-                  let thisOption = 'option' + i;
-                  newQuestion[thisOption] = value;
-                  i++;
-                }
+            for (const option of result.options) {
+              if (option != null){
+                newQuestion.options.push(option);
               }
             }
             // Searches question array to see if this question exists
@@ -148,6 +159,10 @@ export class AddQuizComponent implements OnInit {
       );
   }
 
+  addOption() {
+    this.options.push(this.formBuilder.control(''));
+  }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -161,7 +176,8 @@ export class AddQuizComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private quizService: QuizService,
-    private userservice: UserService
+    private userservice: UserService,
+    private formBuilder: FormBuilder
   ) { }
 
   ngOnInit(): void {

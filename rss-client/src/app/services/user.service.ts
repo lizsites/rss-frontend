@@ -99,8 +99,8 @@ export class UserService {
   // };
   user: User = {
     userId: 2021,
-    email: '',
-    password: '',
+    email: 'q',
+    password: 'q',
     profilePic: null,
     firstName: 'admin',
     lastName: 'admin',
