@@ -125,15 +125,8 @@ export class AddQuizComponent implements OnInit {
           if (result.type == 'update') {
             //TODO:update question in Database
             // Addstuff here to change what each question contains
-            console.log("Result")
-            console.log(result);
-            console.log("QUestions");
-            console.log(this.focusedQuiz.questions);
-            const questionIndex = this.focusedQuiz.questions.findIndex(x => x.question == result.value.question);
-            console.log("Question index");
-            console.log(questionIndex);
             let newQuestion = {
-              questionId: questionIndex,
+              questionId: -1,
               question: result.value.question,
               questionValue: result.value.questionValue,
               correctAnswer: result.value.correctAnswer,
@@ -145,19 +138,17 @@ export class AddQuizComponent implements OnInit {
                 newQuestion.options.push(option);
               }
             }
+            const givenQuestion = result.value.question;
             // Searches question array to see if this question exists
-            console.log('Quiz questions!');
-            console.log(this.focusedQuiz.questions);
-            console.log(result.value);
-            const index = this.focusedQuiz.questions.indexOf(
-              result.value
-            );
-            console.log(index);
+            const index = this.focusedQuiz.questions.findIndex(
+              x => x.question == givenQuestion);
             // if it doesn't exist, push it to the end of the question array
             if (index == -1) {
+              newQuestion.questionId = this.focusedQuiz.questions.length;
               this.focusedQuiz.questions.push(newQuestion);
             } else {
               // if it does exists, update the question
+              newQuestion.questionId = this.focusedQuiz.questions[index].questionId;
               this.focusedQuiz.questions[index] = newQuestion;
             }
             // updates the total points available in this quiz
