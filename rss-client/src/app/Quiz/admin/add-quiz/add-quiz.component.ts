@@ -105,16 +105,20 @@ export class AddQuizComponent implements OnInit {
         quiz: {},
       };
     } else {
-      console.log(question);
       this.options.clear();
       for (const option of question.options){
         this.addOption();
+      }
+      // Add all option Strings to an array so Form can read
+      let optionArray = [];
+      for (let optionObject of question.options){
+        optionArray.push(optionObject.option);
       }
       this.questionForm.setValue({
         question: question.question,
         questionValue: question.questionValue,
         correctAnswer: question.correctAnswer,
-        options: question.options
+        options: optionArray
       });
     }
     this.modalService
@@ -133,9 +137,14 @@ export class AddQuizComponent implements OnInit {
               options: []
             };
             // Adds only options with not null values
-            for (const option of result.value.options) {
-              if (option != null){
-                newQuestion.options.push(option);
+            for (const optionVal of result.value.options) {
+              if (optionVal != null){
+                const optionObject = {
+                  optionId: 0,
+                  questionId: 0,
+                  option: optionVal
+                };
+                newQuestion.options.push(optionObject);
               }
             }
             const givenQuestion = result.value.question;

@@ -150,10 +150,11 @@ export class QuizService {
   }
 
   addManyQuestions(questions): Observable<Questions> {
-    this.questions = questions;
+    // this.questions = questions;
+    console.log(questions);
     return this.httpclient.post<any>(
       this.url + '/question/admin/addall',
-      this.questions
+      questions
     );
   }
   deleteQuestion(id) {
