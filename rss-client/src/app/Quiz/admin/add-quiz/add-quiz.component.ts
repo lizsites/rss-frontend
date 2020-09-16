@@ -106,6 +106,10 @@ export class AddQuizComponent implements OnInit {
       };
     } else {
       console.log(question);
+      this.options.clear();
+      for (const option of question.options){
+        this.addOption();
+      }
       this.questionForm.setValue({
         question: question.question,
         questionValue: question.questionValue,
@@ -121,9 +125,15 @@ export class AddQuizComponent implements OnInit {
           if (result.type == 'update') {
             //TODO:update question in Database
             // Addstuff here to change what each question contains
+            console.log("Result")
             console.log(result);
+            console.log("QUestions");
+            console.log(this.focusedQuiz.questions);
+            const questionIndex = this.focusedQuiz.questions.findIndex(x => x.question == result.value.question);
+            console.log("Question index");
+            console.log(questionIndex);
             let newQuestion = {
-              questionId: this.focusedQuestion.questionId,
+              questionId: questionIndex,
               question: result.value.question,
               questionValue: result.value.questionValue,
               correctAnswer: result.value.correctAnswer,
@@ -136,9 +146,13 @@ export class AddQuizComponent implements OnInit {
               }
             }
             // Searches question array to see if this question exists
-            let index = this.focusedQuiz.questions.indexOf(
-              this.focusedQuestion
+            console.log('Quiz questions!');
+            console.log(this.focusedQuiz.questions);
+            console.log(result.value);
+            const index = this.focusedQuiz.questions.indexOf(
+              result.value
             );
+            console.log(index);
             // if it doesn't exist, push it to the end of the question array
             if (index == -1) {
               this.focusedQuiz.questions.push(newQuestion);
@@ -168,6 +182,9 @@ export class AddQuizComponent implements OnInit {
 
   addOption() {
     this.options.push(this.formBuilder.control(''));
+  }
+  removeOption(i: number) {
+    this.options.removeAt(i);
   }
 
   private getDismissReason(reason: any): string {

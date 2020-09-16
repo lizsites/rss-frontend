@@ -205,8 +205,9 @@
       <div class="form-group">
         <div class="input-group" formArrayName="options">
           <h3>Options</h3> <button (click)="addOption()">Add Option</button>
-          <div *ngFor="let option of options.controls; let i=index">
+          <div class="input-group" *ngFor="let option of options.controls; let i=index">
             <input type="text" [formControlName]="i">
+            <button (click)="removeOption(i)">X</button>
           </div>
         </div>
       </div>
